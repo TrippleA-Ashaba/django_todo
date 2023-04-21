@@ -8,10 +8,17 @@ from .models import Todo
 
 # Create your views here.
 class Home(ListView):
+    model = Todo
     template_name = "index.html"
     context_object_name = "todos"
-    model = Todo
     ordering = ["done", "-date_created"]
+
+    # get completed percentage
+    done_todos = Todo.objects.filter(done=True).count()
+    undone_todos = Todo.objects.filter(done=False).count()
+    completed = (done_todos / undone_todos) * 100
+
+    extra_context = {"completed": completed}
 
 
 class AddTodo(CreateView):

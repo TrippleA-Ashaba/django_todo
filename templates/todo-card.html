@@ -17,7 +17,7 @@
 							placeholder="Add TODO to list"
 							name="title" />
 						<button class="btn btn-success ms-1" type="submit">
-							<i class="bi bi-trash3"></i>
+							<i class="bi bi-plus-circle"></i>
 						</button>
 					</form>
 				</div>
@@ -76,7 +76,9 @@
 			</div>
 
 			<!-- STATS -->
-			<div class="my-2">0 remaining</div>
+			<div class="my-3 text-end">
+				{{completed|floatformat}}% <span class="fw-bold"> Done </span>
+			</div>
 		</div>
 		<div class="col"></div>
 	</div>
