@@ -1,5 +1,6 @@
-from django.shortcuts import redirect, render
-from django.views.generic import CreateView, ListView, TemplateView
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, TemplateView, DeleteView
 
 from .forms import TodoForm
 from .models import Todo
@@ -18,3 +19,15 @@ class AddTodo(CreateView):
     model = Todo
     form_class = TodoForm
     success_url = "/"
+
+
+class DeleteTodo(DeleteView):
+    model = Todo
+    pk_url_kwarg = "id"
+    success_url = reverse_lazy("home")
+
+
+def delete_todo(request, id):
+    data = get_object_or_404(Todo, id=id)
+    data.delete()
+    return redirect("home")
