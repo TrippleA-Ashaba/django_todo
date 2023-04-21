@@ -5,15 +5,20 @@
 			<h1 class="fs-3 fw-bold text-success">Heading</h1>
 			<div>
 				<div class="mb-3 d-flex shadow">
-					<label for="exampleFormControlInput1" class="form-label" hidden
-						>Email address</label
-					>
-					<input
-						type="text"
-						class="form-control border border-success"
-						id="exampleFormControlInput1"
-						placeholder="Add TODO to list" />
-					<button class="btn btn-success ms-1"><i class="bi bi-plus-circle"></i></button>
+					<form action="{% url 'add_todo' %}">
+						<label for="exampleFormControlInput1" class="form-label" hidden
+							>Add TODO</label
+						>
+						<input
+							type="text"
+							class="form-control border border-success"
+							id="exampleFormControlInput1"
+							placeholder="Add TODO to list"
+							name="add" />
+						<button class="btn btn-success ms-1" type="submit">
+							<i class="bi bi-plus-circle"></i>
+						</button>
+					</form>
 				</div>
 
 				{% if todos %}
@@ -23,7 +28,7 @@
 				<div class="card mb-1 shadow py-2 px-3">
 					<div class="d-flex align-items-center justify-content-between">
 						<div class="form-check">
-							{% if todo.checked %}
+							{% if todo.done %}
 							<input
 								class="form-check-input border-success"
 								type="checkbox"
