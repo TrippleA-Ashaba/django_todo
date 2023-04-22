@@ -14,11 +14,24 @@ class Home(ListView):
     ordering = ["done", "-date_created"]
 
     # get completed percentage
-    done_todos = Todo.objects.filter(done=True).count()
-    undone_todos = Todo.objects.filter(done=False).count()
-    completed = (done_todos / undone_todos) * 100
+    try:
+        done_todos = Todo.objects.filter(done=True).count()
+        all_todos = Todo.objects.all().count()
+        completed = (done_todos / all_todos) * 100
+    except ZeroDivisionError:
+        completed = 0
 
     extra_context = {"completed": completed}
+
+
+# def home_view(request):
+#     todos = Todo.objects.all().order_by("done", "-date_created")
+#     done_todos = todos.filter("done")
+#     val = done_todos.count()
+#     completed_percentage = (val / todos.count()) * 100
+#     return render(
+#         request, "home.html", {"todos": todos, "completed": completed_percentage}
+#     )
 
 
 class AddTodo(CreateView):
