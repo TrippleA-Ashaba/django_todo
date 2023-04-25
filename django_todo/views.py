@@ -4,6 +4,7 @@ from django.views.generic import CreateView, ListView, TemplateView, DeleteView
 
 from .forms import TodoForm
 from .models import Todo
+from django.db.models import Count, F, FloatField, Case, When
 
 
 # Create your views here.
@@ -24,21 +25,20 @@ class Home(ListView):
     extra_context = {"completed": completed}
 
 
-# def home_view(request):
-#     todos = Todo.objects.all().order_by("done", "-date_created")
-#     done_todos = todos.filter("done")
-#     val = done_todos.count()
-#     completed_percentage = (val / todos.count()) * 100
-#     return render(
-#         request, "home.html", {"todos": todos, "completed": completed_percentage}
-#     )
+def test_view(request):
+    todo_queryset = Todo.objects.values("id", "title", "done").annotate(
+        percentage_done=Count(Case(When(done=True, then=1), output_field=FloatField()))
+        * 100.0
+        / Count("id")
+    )
+    return render(request, "index.html", {"todos": todo_queryset})
 
 
 class AddTodo(CreateView):
     template_name = "index.html"
     model = Todo
     form_class = TodoForm
-    success_url = "/"
+    success_url = "/test"
 
 
 class DeleteTodo(DeleteView):
