@@ -54,9 +54,14 @@
 							{% endif %}
 						</div>
 						<div class="buttons d-flex">
-							<button class="btn btn-success btn-sm text-white me-1" type="button">
-								<i class="bi bi-check2-all"></i>
-							</button>
+							<form action="{% url 'update_todo' todo.id %}" method="post">
+								{% csrf_token %}
+								<button
+									class="btn btn-success btn-sm text-white me-1"
+									type="button">
+									<i class="bi bi-check2-all"></i>
+								</button>
+							</form>
 							<form action="{% url 'delete_todo' todo.id %}" method="post">
 								{% csrf_token %}
 								<button class="btn btn-danger btn-sm text-white" type="submit">
@@ -77,9 +82,10 @@
 
 			<!-- STATS -->
 			<div class="my-3 text-end">
-				{{todos.percentage_done}}% <span class="fw-bold"> Done </span>
+				{{percent|floatformat}}% <span class="fw-bold"> Done </span>
 			</div>
 		</div>
+		{{done}}
 		<div class="col"></div>
 	</div>
 </div>

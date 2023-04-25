@@ -1,10 +1,16 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, TemplateView, DeleteView
+from django.views.generic import (
+    CreateView,
+    ListView,
+    TemplateView,
+    DeleteView,
+    UpdateView,
+)
 
 from .forms import TodoForm
 from .models import Todo
-from django.db.models import Count, F, FloatField, Case, When
+from django.db.models import Count, F, FloatField, Case, When, Value
 
 
 # Create your views here.
@@ -26,12 +32,17 @@ class Home(ListView):
 
 
 def test_view(request):
-    todo_queryset = Todo.objects.values("id", "title", "done").annotate(
-        percentage_done=Count(Case(When(done=True, then=1), output_field=FloatField()))
-        * 100.0
-        / Count("id")
+    todo_queryset = Todo.objects.all()
+    done = todo_queryset.filter(done=True).count()
+    percentage_done = (
+        ((done / todo_queryset.count()) * 100) if len(todo_queryset) > 0 else 0
     )
-    return render(request, "index.html", {"todos": todo_queryset})
+
+    return render(
+        request,
+        "index.html",
+        {"todos": todo_queryset, "done": done, "percent": percentage_done},
+    )
 
 
 class AddTodo(CreateView):
@@ -47,7 +58,14 @@ class DeleteTodo(DeleteView):
     success_url = reverse_lazy("home")
 
 
-def delete_todo(request, id):
-    data = get_object_or_404(Todo, id=id)
-    data.delete()
-    return redirect("home")
+class UpdateTodo(UpdateView):
+    model = Todo
+    pk_url_kwarg = "id"
+    fields = ["done"]
+    success_url = reverse_lazy("home")
+
+
+# def delete_todo(request, id):
+#     data = get_object_or_404(Todo, id=id)
+#     data.delete()
+#     return redirect("home")
