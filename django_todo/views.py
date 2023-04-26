@@ -20,36 +20,44 @@ class Home(ListView):
     context_object_name = "todos"
     ordering = ["done", "-date_created"]
 
-    # get completed percentage
-    try:
-        done_todos = Todo.objects.filter(done=True).count()
-        all_todos = Todo.objects.all().count()
-        completed = (done_todos / all_todos) * 100
-    except ZeroDivisionError:
-        completed = 0
-
-    extra_context = {"completed": completed}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        total_count = self.object_list.count()
+        done_count = self.object_list.filter(done=True).count()
+        percentage_done = (done_count / total_count) * 100 if total_count > 0 else 0
+        context["percentage_done"] = percentage_done
+        return context
 
 
 def test_view(request):
+    # todo_queryset = Todo.objects.annotate(
+    #     done_count=Count("id", filter=F("done")),
+    #     total_count=Count("id"),
+    #     percentage_done=F("done_count") / F("total_count") * 100,
+    # ).order_by("done", "-date_created")
+
     todo_queryset = Todo.objects.all().order_by("done", "-date_created")
-    done = todo_queryset.filter(done=True).count()
-    percentage_done = (
-        ((done / todo_queryset.count()) * 100) if len(todo_queryset) > 0 else 0
+
+    total_count = todo_queryset.count()
+    done_count = todo_queryset.aggregate(done_count=Count("id", filter=F("done"))).get(
+        "done_count", 0
     )
 
-    return render(
-        request,
-        "index.html",
-        {"todos": todo_queryset, "done": done, "percent": percentage_done},
-    )
+    percentage_done = (done_count / total_count) * 100 if total_count > 0 else 0
+
+    context = {
+        "todos": todo_queryset,
+        "percentage_done": percentage_done,
+    }
+
+    return render(request, "index.html", context)
 
 
 class AddTodo(CreateView):
     template_name = "index.html"
     model = Todo
     form_class = TodoForm
-    success_url = "/test"
+    success_url = reverse_lazy("home")
 
 
 class DeleteTodo(DeleteView):
@@ -58,19 +66,24 @@ class DeleteTodo(DeleteView):
     success_url = reverse_lazy("home")
 
 
-class UpdateTodo(UpdateView):
-    model = Todo
-    pk_url_kwarg = "id"
-    fields = ["done"]
-    success_url = reverse_lazy("home")
-
-
 def toggle_todo(request, pk):
     todo = get_object_or_404(Todo, pk=pk)
     todo.done = not todo.done
     todo.save()
-    return redirect("test")
+    return redirect("home")
 
+
+# class ToggleTodoView(UpdateView):
+#     model = Todo
+#     fields = ['done']
+#     success_url = reverse_lazy('todo_list')
+
+#     def form_valid(self, form):
+#         # Toggle the 'done' field value
+#         self.object = form.save(commit=False)
+#         self.object.done = not self.object.done
+#         self.object.save()
+#         return super().form_valid(form)
 
 # def delete_todo(request, id):
 #     data = get_object_or_404(Todo, id=id)

@@ -41,13 +41,13 @@
 								<a
 									href="{% url 'toggle_todo' todo.pk %}"
 									class="btn btn-sm btn-danger">
-									<i class="bi bi-plus"></i>
+									<i class="bi bi-x-circle"></i>
 								</a>
 								{% else %}
 								<a
 									href="{% url 'toggle_todo' todo.pk %}"
 									class="btn btn-sm btn-success"
-									><i class="bi bi-plus"></i
+									><i class="bi bi-check2-circle"></i
 								></a>
 								{% endif %}
 							</div>
@@ -75,10 +75,10 @@
 
 			<!-- STATS -->
 			<div class="my-3 text-end">
-				{{percent|floatformat}}% <span class="fw-bold"> Done </span>
+				{{percentage_done}}%
+				<span class="fw-bold"> Done </span>
 			</div>
 		</div>
-		{{done}}
 		<div class="col"></div>
 	</div>
 </div>
