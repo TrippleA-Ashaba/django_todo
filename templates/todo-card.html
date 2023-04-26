@@ -28,31 +28,13 @@
 				<!-- TODO CARD -->
 				<div class="card mb-1 shadow py-2 px-3">
 					<div class="d-flex align-items-center justify-content-between">
-						<div class="form-check">
-							{% if todo.done %}
-							<input
-								class="form-check-input border-success"
-								type="checkbox"
-								value=""
-								id="{{todo.id}}"
-								checked />
-							<label
-								class="form-check-label text-success fw-bold text-decoration-line-through opacity-50"
-								for="{{todo.id}}">
-								{{todo.title}}
-							</label>
-							{% else %}
-							<input
-								class="form-check-input border-success"
-								type="checkbox"
-								value=""
-								id="{{todo.id}}" />
-
-							<label class="form-check-label text-success fw-bold" for="{{todo.id}}">
-								{{todo.title}}
-							</label>
-							{% endif %}
+						{% if todo.done %}
+						<div class="text-success fw-bold text-decoration-line-through opacity-50">
+							{{todo.title}}
 						</div>
+						{% else %}
+						<div class="text-success fw-bold">{{todo.title}}</div>
+						{% endif %}
 						<div class="buttons d-flex">
 							<div>
 								{% if todo.done %}

@@ -32,7 +32,7 @@ class Home(ListView):
 
 
 def test_view(request):
-    todo_queryset = Todo.objects.all()
+    todo_queryset = Todo.objects.all().order_by("done", "-date_created")
     done = todo_queryset.filter(done=True).count()
     percentage_done = (
         ((done / todo_queryset.count()) * 100) if len(todo_queryset) > 0 else 0
