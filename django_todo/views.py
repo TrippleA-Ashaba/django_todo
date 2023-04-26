@@ -65,6 +65,13 @@ class UpdateTodo(UpdateView):
     success_url = reverse_lazy("home")
 
 
+def toggle_todo(request, pk):
+    todo = get_object_or_404(Todo, pk=pk)
+    todo.done = not todo.done
+    todo.save()
+    return redirect("test")
+
+
 # def delete_todo(request, id):
 #     data = get_object_or_404(Todo, id=id)
 #     data.delete()

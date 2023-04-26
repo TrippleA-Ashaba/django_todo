@@ -54,15 +54,26 @@
 							{% endif %}
 						</div>
 						<div class="buttons d-flex">
-							<form action="{% url 'update_todo' todo.id %}" method="post">
-								{% csrf_token %}
-								<button
-									class="btn btn-success btn-sm text-white me-1"
-									type="button">
-									<i class="bi bi-check2-all"></i>
-								</button>
-							</form>
-							<form action="{% url 'delete_todo' todo.id %}" method="post">
+							<div>
+								{% if todo.done %}
+								<a
+									href="{% url 'toggle_todo' todo.pk %}"
+									class="btn btn-sm btn-danger">
+									<i class="bi bi-plus"></i>
+								</a>
+								{% else %}
+								<a
+									href="{% url 'toggle_todo' todo.pk %}"
+									class="btn btn-sm btn-success"
+									><i class="bi bi-plus"></i
+								></a>
+								{% endif %}
+							</div>
+
+							<form
+								class="ms-1"
+								action="{% url 'delete_todo' todo.id %}"
+								method="post">
 								{% csrf_token %}
 								<button class="btn btn-danger btn-sm text-white" type="submit">
 									<i class="bi bi-trash3"></i>
