@@ -1,11 +1,6 @@
-from django.db.models import Case, Count, F, FloatField, Value, When
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    ListView,
-)
+from django.views.generic import CreateView, DeleteView, ListView
 
 from .forms import TodoForm
 from .models import Todo
